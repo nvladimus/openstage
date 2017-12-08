@@ -45,9 +45,6 @@ void setup() {
    axisPresent[3]=1;
   #endif
 
-
-
-
   if (verbose){
     Serial.print("Setting up pins for axes: ");
   }
@@ -89,8 +86,6 @@ void setup() {
    lcd.clear();
   #endif
 
-
-
   // Connect to the USB Shield
   #ifdef DO_GAMEPAD
     if (verbose){
@@ -129,8 +124,6 @@ void setup() {
    lcd.print ("Booting OpenStage");
    lcd.setCursor (0,1);   
   #endif
-
-
 
   //the variable thisStep can take on one of four values for each axis
   //Calculate all of these here
