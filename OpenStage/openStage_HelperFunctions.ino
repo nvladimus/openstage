@@ -71,10 +71,6 @@ void updateStagePos(int axis, long steps, float stepSize){
 	stagePosition[axis] += steps * (fullStep[axis]/360) * stepSize * gearRatio[axis];
 } //End updateStagePos()
 
-
-
-
-
 //------------------------------------------------------------------------------------------------
 // * dButtonMove
 // Executes a move based upon a click of a D-Pad button. Uses globals from the top of the file to

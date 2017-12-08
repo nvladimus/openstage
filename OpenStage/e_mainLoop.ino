@@ -54,6 +54,21 @@ void loop() {
     }
   #endif
 
+  //Move based on rotary encoder
+  #ifdef DO_ROTARY_ENCODER
+    float newRotEncTarget[numAxes];
+    float speedX = 10.0; //micron per rot. encoder step
+    long newRotEncCounter = rotEncoderX.read();
+    int diffRotEncCounter = newRotEncCounter - oldRotEncCounter;
+    if(abs(diffRotEncCounter) > 0){ //rot. encoder counter increments by 4 at each step
+      newRotEncTarget[0] = stagePosition[0] + (diffRotEncCounter/4.0)*speedX;
+      moveToTarget(newRotEncTarget);
+      oldRotEncCounter = newRotEncCounter;
+      //Serial.println(diffRotEncCounter);
+      Serial.println(stagePosition[0]);
+    }
+  #endif 
+  
   //Move based on serial commands 
   #ifdef DO_SERIAL_INTERFACE
     if (SerialComms->available()){

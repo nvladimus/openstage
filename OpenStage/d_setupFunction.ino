@@ -2,7 +2,6 @@
 void setup() {
   bool verbose=0;
 
-
   // Connect to the PC's serial port via the Arduino programming USB connection. 
   // This used mainly for printing de-bugging information to the PC's serial terminal
   // during testing. [In future we will add the option for controlling the stage through
@@ -46,8 +45,6 @@ void setup() {
   #endif
 
 
-
-
   if (verbose){
     Serial.print("Setting up pins for axes: ");
   }
@@ -89,7 +86,9 @@ void setup() {
    lcd.clear();
   #endif
 
-
+  #ifdef DO_ROTARY_ENCODER
+    oldRotEncCounter  = rotEncoderX.read();
+  #endif
 
   // Connect to the USB Shield
   #ifdef DO_GAMEPAD

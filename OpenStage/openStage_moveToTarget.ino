@@ -14,15 +14,12 @@ void moveToTarget(float target[]){
  float intendedMove[numAxes]; //How far to move on each axis. 
  setStep(moveToStepSize);
  
- 
-  
   #ifdef DO_GAMEPAD
     PS3.setAllOff(); //Switch off the LEDs to indicate that we're making a non-manual motion
   #endif
 
   float oneStep[numAxes]; //how far one step takes us
   long stepsToTake[numAxes]; //how many steps to take on each axis
-
 
   for (ii=0; ii<numAxes; ii++){
     if (!axisPresent[ii]){

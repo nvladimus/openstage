@@ -14,9 +14,7 @@
 //
 //#define DO_LCD      //Uncomment this line to enable enable LCD character display
 //#define DO_GAMEPAD //Uncomment this line to enable PS3 DualShock as an input device
-
-
-
+#define DO_ROTARY_ENCODER // Uncoment this if rotary encoder is used for manual motor control
 
 //------------------------------------------------------------------------------------------------
 // * Serial communications
@@ -38,7 +36,7 @@ HardwareSerial* SerialComms;  //pointer to stage comms serial object
 
 //The following is not a user setting 
 #ifdef DO_SERIAL_INTERFACE
- bool LSerialInterface=1; //Do not alter this value 
+ bool doSerialInterface=1; //Do not alter this value 
 #endif
 
 #ifndef DO_SERIAL_INTERFACE
@@ -75,7 +73,7 @@ const byte numAxes=1; //Set this to the number of axes on you system
 // Micrometer gear ratios on X,Y,Z in microns per revolution. 
 // NOTE: in this case and all others, unused axes can have any value. Values of unused axes
 // are simply not read.  
-unsigned short gearRatio[maxAxes]={635,635,250,635}; 
+unsigned short gearRatio[maxAxes]={500,635,250,635}; 
 
 
 // fullStep
@@ -83,7 +81,7 @@ unsigned short gearRatio[maxAxes]={635,635,250,635};
 // degree step sizes. Motors with finer step sizes are available but driving them in 
 // quickly using sub-micron steps is a limiting factor. If you want to get up and running 
 // in the shortest time, 0.9 degree motors are suggested. 
-float fullStep[maxAxes]={0.9,0.9,0.9,0.9}; //In degrees
+float fullStep[maxAxes]={1.8,0.9,0.9,0.9}; //In degrees
 
 // disableWhenStationary
 // bool to tell the system whether or not a motor should be disabled when the stage isn't moving.
@@ -91,40 +89,31 @@ float fullStep[maxAxes]={0.9,0.9,0.9,0.9}; //In degrees
 // power is switched off. Perhaps it makes make sense to do this in X and Y but not Z. 
 bool disableWhenStationary[maxAxes]={0,0,0,0};
 
-
-
-
-
-
 //------------------------------------------------------------------------------------------------
 // * Motor control DIO lines
 // Alter the following based on how your system is wired. 
 
 // stepOut
 // One pulse at these pins moves the motor by one step (or one micro-step)
-byte stepOut[maxAxes]={11,24,26,0}; //Set these to the step out pins (ordered X, Y, and Z)
+byte stepOut[maxAxes]={3,24,26,0}; //Set these to the step out pins (ordered X, Y, and Z)
 
 // stepDir
 // These pins tell the Big Easy Driver to which they connect which direction to rotate the motor
-byte stepDir[maxAxes]={12,25,27,0}; //Ordered X, Y, and Z
+byte stepDir[maxAxes]={2,25,27,0}; //Ordered X, Y, and Z
 
 // enable
 // If these pins are low, the motor is enabled. If high it's disabled. Disabling might decrease 
 // electrical noise but will lead to errors in absolute positioning. 
-byte enable[maxAxes]={3,29,30,0}; //Ordered X, Y, and Z
+byte enable[maxAxes]={7,29,30,0}; //Ordered X, Y, and Z
 
 // The microstep pins.
 // These pins define the microstep size. The MS pins on all axes are wired together.
 byte MS[4][3]={ 
-	{45,47,49},  //channel 1, MS pins 1,2,3
+	{6,5,4},  //channel 1, MS pins 1,2,3
 	{45,47,49},  //channel 2, MS pins 1,2,3
 	{45,47,49},  //channel 3, MS pins 1,2,3
 	{45,47,49}   //channel 4, MS pins 1,2,3
 	};
-
-
-
-
 
 //------------------------------------------------------------------------------------------------
 // * Outputs
@@ -155,9 +144,10 @@ byte stageLEDs[maxAxes]={13,36,35,35};
    LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 #endif
 
-
-
-
+// Define rotary encoder pins, they should have Interrupt capability, see https://www.pjrc.com/teensy/td_libs_Encoder.html
+#ifdef DO_ROTARY_ENCODER
+  Encoder rotEncoderX(52,50);
+#endif 
 
 //------------------------------------------------------------------------------------------------
 // PS3 Controller speed settings
@@ -175,7 +165,7 @@ byte stageLEDs[maxAxes]={13,36,35,35};
 // its absolute position (there is no feedback from the motors). Note that the selection of speed
 // values and step sizes are chosen based on the resulting step frequencies the controller must 
 // produce and on resonances the motors might exhibit.   
-unsigned short maxSpeed[4]={3.5,25,100,750}; //defined in microns per second
+unsigned short maxSpeed[4]={4,25,100,750}; //defined in microns per second
 
 
 // stepSize
@@ -195,7 +185,7 @@ float stepSize[4]={1/16.0, 1/8.0, 1/4.0, 1/2.0}; //Defined in fractions of a ful
 float DPadStep[4]={3,5,10,50}; 
 float DPadStepSize=1/2.0;
 // Acceleration in X, Y, and Z
-unsigned long DPadAccel[maxAxes]={1.0E4, 1.0E4, 1.0E4, 1.0E4};
+unsigned long DPadAccel[maxAxes]={10000, 10000, 10000, 10000};
 
 // * moveTo speeds
 //
@@ -204,7 +194,7 @@ unsigned long DPadAccel[maxAxes]={1.0E4, 1.0E4, 1.0E4, 1.0E4};
 // step size and motor RPM are reported to the serial terminal on bootup.
 float moveToStepSize=1.0/2.0;
 unsigned int moveToSpeed[maxAxes]={1600,1600,1200,1600}; 
-unsigned int moveToAccel[maxAxes]={1.0E4,1.0E4,1.0E4,1.0E4};
+unsigned int moveToAccel[maxAxes]={10000,10000,10000,10000};
 
 
 // * Allow for inverting of hat-stick motions

@@ -23,6 +23,7 @@ float buttonStageLocations[4][maxAxes] = {{0,0,0,0},
 // unbound to a location as it may make the stage perform a large motion to back to zero.
 bool locationStored[4]={0,0,0,0};
 
+long oldRotEncCounter = 0;
 
 // SPEEDMAT stores the motor speed for each hat-stick value at each speed mode. These numbers
 // are calculated once in the setup function and never change during execution. Pre-calculating 
