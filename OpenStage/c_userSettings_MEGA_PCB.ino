@@ -7,10 +7,9 @@
 //------------------------------------------------------------------------------------------------
 // * Enable/disable major OpenStage functions 
 //
-//#define DO_LCD      //Uncomment this line to enable enable LCD character display
-//#define DO_GAMEPAD  //Uncomment this line to enable PS3 DualShock as an input device
-//#define PCB         //This is uncommented if the user has an OpenStage PCB
-//#define DO_ROTARY_ENCODER // Uncoment this if rotary encoder is used for manual motor control
+#define DO_LCD      //Uncomment this line to enable enable LCD character display
+#define DO_GAMEPAD  //Uncomment this line to enable PS3 DualShock as an input device
+#define PCB         //This is uncommented if the user has an OpenStage PCB
 
 
 //------------------------------------------------------------------------------------------------
@@ -24,11 +23,11 @@
 //
 // These three possibilities are controlled by altering the following two variables:
 #define DO_SERIAL_INTERFACE //Uncomment to enable serial interface
-bool controlViaUSB=1;       //Set to 1 to control via USB.
+bool controlViaUSB=0;       //Set to 1 to control via USB.
 
 //If using PC serial port, this is the ID of the MEGA's hardware serial line (e.g. Serial3)
 //If using an Uno, or another mic with no hardware serial, then this should be set to "Serial"
-#define HARDWARE_SERIAL_PORT Serial
+#define HARDWARE_SERIAL_PORT Serial3
 HardwareSerial* SerialComms;  //pointer to stage comms serial object
 
 //The following is not a user setting 
@@ -39,6 +38,10 @@ HardwareSerial* SerialComms;  //pointer to stage comms serial object
 #ifndef DO_SERIAL_INTERFACE
  bool doSerialInterface=0; //Do not alter this value 
 #endif
+
+
+
+
 
 //------------------------------------------------------------------------------------------------
 // * Microscope axis hardware definitions. 
@@ -52,7 +55,7 @@ HardwareSerial* SerialComms;  //pointer to stage comms serial object
 // The properties of each axis are defined as separate variables (mostly arrays with a length 
 // equal to the number of axes). You can have up 4 axes. 
 
-const byte numAxes=1; //Set this to the number of axes on you system (values 1 to 4 are possible)
+const byte numAxes=3; //Set this to the number of axes on you system (values 1 to 4 are possible)
 
 
 // There are up to four steppers that can be added. The step size, gear ratio, etc can 
@@ -60,8 +63,8 @@ const byte numAxes=1; //Set this to the number of axes on you system (values 1 t
 // on each axis. You can choose which of these axes to enable by commenting or uncommenting the
 // definitions below. 
 #define AXIS_1
-//#define AXIS_2
-//#define AXIS_3
+#define AXIS_2
+#define AXIS_3
 //#define AXIS_4
 
 
@@ -69,7 +72,7 @@ const byte numAxes=1; //Set this to the number of axes on you system (values 1 t
 // Micrometer gear ratios on X,Y,Z in microns per revolution.
 // NOTE: in this case and all others, unused axes can have any value. Values of unused axes
 // are simply not read.  
-unsigned short gearRatio[maxAxes]={500,500,250,250}; 
+unsigned short gearRatio[maxAxes]={635,635,250,635}; 
 
 
 // fullStep
@@ -77,13 +80,23 @@ unsigned short gearRatio[maxAxes]={500,500,250,250};
 // degree step sizes. Motors with finer step sizes are available but driving them in 
 // quickly using sub-micron steps is a limiting factor. If you want to get up and running 
 // in the shortest time, 0.9 degree motors are suggested. 
-float fullStep[maxAxes]={1.8,1.8,0.9,0.9}; //In degrees
+float fullStep[maxAxes]={0.9,0.9,0.9,0.9}; //In degrees
 
 // disableWhenStationary
 // bool to tell the system whether or not a motor should be disabled when the stage isn't moving.
 // Disabling will reduce noise but can cause the motors to move to the nearest full step when the
 // power is switched off. Perhaps it makes make sense to do this in X and Y but not Z. 
 bool disableWhenStationary[maxAxes]={0,0,0,0};
+
+
+
+
+
+
+
+
+
+
 
 
 //------------------------------------------------------------------------------------------------
@@ -102,7 +115,7 @@ bool disableWhenStationary[maxAxes]={0,0,0,0};
 // its absolute position (there is no feedback from the motors). Note that the selection of speed
 // values and step sizes are chosen based on the resulting step frequencies the controller must 
 // produce and on resonances the motors might exhibit.   
-unsigned short maxSpeed[4]={5,25,100,750}; //defined in microns per second
+unsigned short maxSpeed[4]={3.5,25,100,750}; //defined in microns per second
 
 
 // stepSize
@@ -122,7 +135,7 @@ float stepSize[4]={1/16.0, 1/8.0, 1/4.0, 1/2.0}; //Defined in fractions of a ful
 float DPadStep[4]={3,5,10,50}; 
 float DPadStepSize=1/2.0;
 // Acceleration in X, Y, and Z
-unsigned long DPadAccel[maxAxes]={10000, 10000, 10000, 10000};
+unsigned long DPadAccel[maxAxes]={1.0E4, 1.0E4, 1.0E4, 1.0E4};
 
 
 // * moveTo speeds
@@ -134,11 +147,12 @@ unsigned long DPadAccel[maxAxes]={10000, 10000, 10000, 10000};
 // about 4 kHz.
 float moveToStepSize=1.0/2.0;
 unsigned int moveToSpeed[maxAxes]={1600,1600,1200,1600}; 
-unsigned int moveToAccel[maxAxes]={10000,10000,10000,10000};
+unsigned int moveToAccel[maxAxes]={1.0E4,1.0E4,1.0E4,1.0E4};
 
 // * Allow for inverting of hat-stick motions
 // to invert hat-stick motion direction set to -1, otherwise set to 1. 
 short hatInvert[maxAxes]={1,1,1,1};
+
 
 //---------------------------------UNLIKELY TO NEED TO CHANGE THESE-------------------------------
 // The following settings can be changed, but you're unlikely to need to do so. 
@@ -161,13 +175,24 @@ float curve[4]={-7,-6,-5,-4};
 #endif
 
 
+
+
+
+
+
+
+
+
 //IF YOU HAVE AN OPENSTAGE PCB YOU WILL CHANGE NONE OF THE FOLLOWING. 
+
+
+
 
 //------------------------------------------------------------------------------------------------
 // * Outputs
 // The following are pin definitions of controller outputs. These signal information to the user
 
-byte beepPin=A4; //Set this to the pin to which the Piezo buzzer is connected 
+byte beepPin=A15; //Set this to the pin to which the Piezo buzzer is connected 
 
 // stageLEDs
 // LEDs will light when the stage moves or an axis is reset, 
@@ -179,14 +204,9 @@ byte stageLEDs[4]={A0,A1,A2,A3};
 
 // Define pins for LCD display (http://learn.adafruit.com/character-lcds/wiring-a-character-lcd)
 #ifdef DO_LCD
-   LiquidCrystal lcd(21,20,19,18,17,16);
+   LiquidCrystal lcd(A6,A7,A11,A12,A13,A14);
 #endif
 
-/* Define rotary encoder pins, they should have Interrupt capability, see https://www.pjrc.com/teensy/td_libs_Encoder.html
-#ifdef DO_ROTARY_ENCODER
-  Encoder rotEncoderX(52,50);
-  long oldRotEncCounter  = rotEncoderX.read();
-#endif */
 
 //------------------------------------------------------------------------------------------------
 // * Motor control DIO lines
@@ -194,23 +214,23 @@ byte stageLEDs[4]={A0,A1,A2,A3};
 
 // stepOut
 // One pulse at these pins moves the motor by one step (or one micro-step)
-byte stepOut[maxAxes]={3,31,47,28}; //Set these to the step out pins (ordered X, Y, Z, Z')
+byte stepOut[maxAxes]={44,31,47,28}; //Set these to the step out pins (ordered X, Y, Z, Z')
 
 // stepDir
 // These pins tell the Big Easy Driver to which they connect which direction to rotate the motor
-byte stepDir[maxAxes]={2,30,46,29}; //Ordered X, Y, Z, Z'
+byte stepDir[maxAxes]={45,30,46,29}; //Ordered X, Y, Z, Z'
 
 // enable
 // If these pins are low, the motor is enabled. If high it's disabled. Disabling might decrease 
 // electrical noise but will lead to errors in absolute positioning. 
-byte enable[maxAxes]={7,36,7,23}; //Ordered X, Y, Z, Z' 
+byte enable[maxAxes]={39,36,7,23}; //Ordered X, Y, Z, Z' 
 
 // The microstep pins.
 // These pins define the microstep size. The MS pins on all axes are wired together.
 
 //Let's define an array with the microstepping pins
 byte MS[4][3]={ 
-	{6,5,4},  //channel 1, MS pins 1,2,3
+	{42,43,40},  //channel 1, MS pins 1,2,3
 	{33,32,35},  //channel 2, MS pins 1,2,3
 	{49,48,10},  //channel 3, MS pins 1,2,3
 	{26,27,24}   //channel 4, MS pins 1,2,3
@@ -237,6 +257,5 @@ AccelStepper *mySteppers[numAxes];
 #ifdef AXIS_4
  AccelStepper stepper4(1, stepOut[3], stepDir[3]); 
 #endif
-
 
 
