@@ -60,7 +60,7 @@ void loop() {
     long newRotEncCounter = rotEncoderX.read();
     int diffRotEncCounter = newRotEncCounter - oldRotEncCounter;
     if(abs(diffRotEncCounter) > 0){ //rot. encoder counter increments by 4 at each step
-      newRotEncTarget[0] = stagePosition[0] + (diffRotEncCounter/4.0)*currentSpeed[0];
+      newRotEncTarget[0] = stagePosition[0] + (diffRotEncCounter/4.0)*currentSpeed[0];//assuming dt = 1 s, will change later
       moveToTarget(newRotEncTarget);
       oldRotEncCounter = newRotEncCounter;
       //Serial.println(diffRotEncCounter);
@@ -87,6 +87,10 @@ void loop() {
           currentSpeed[0] = rotaryEncoderSpeed[speedIndex];
           Serial.print("new speed:");
           Serial.println(currentSpeed[0],0);
+          for(byte i=0;i<3;i++){ 
+            digitalWrite(rotEncoderLEDs[i],HIGH);  //turn all LEDs off
+          }
+          digitalWrite(rotEncoderLEDs[speedIndex],LOW); //turn new LED on
         }
       }
       lastDebounceTime = millis();

@@ -29,6 +29,7 @@ int buttonState = LOW;
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
 int bounceCounter = 0;
 int debounceCount = 10;
+unsigned short speedIndex = -1;
 
 // SPEEDMAT stores the motor speed for each hat-stick value at each speed mode. These numbers
 // are calculated once in the setup function and never change during execution. Pre-calculating 

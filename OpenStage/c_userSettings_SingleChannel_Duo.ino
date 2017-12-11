@@ -148,8 +148,8 @@ byte stageLEDs[maxAxes]={13,36,35,35};
 #ifdef DO_ROTARY_ENCODER
   Encoder rotEncoderX(52,50);
   byte rotEncoderPushButton = 40; //pin for a push button input
+  byte rotEncoderLEDs[3] = {8,9,10}; //LED pins, LOW for turning ON.
   unsigned short rotaryEncoderSpeed[3] = {10,50,200}; //speed selected by the pushbutton action on the rotary encoder shaft
-  unsigned short speedIndex = 0;
 #endif 
 
 

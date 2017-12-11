@@ -89,6 +89,11 @@ void setup() {
   #ifdef DO_ROTARY_ENCODER
     oldRotEncCounter  = rotEncoderX.read();
     pinMode(rotEncoderPushButton, INPUT);
+    for(byte i=0;i<3;i++){
+      pinMode(rotEncoderLEDs[i],OUTPUT);
+      digitalWrite(rotEncoderLEDs[i],HIGH);
+    }
+    speedIndex = -1;
   #endif
 
   // Connect to the USB Shield
