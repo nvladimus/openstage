@@ -147,6 +147,7 @@ byte stageLEDs[maxAxes]={13,36,35,35};
 // Define rotary encoder pins, they should have Interrupt capability, see https://www.pjrc.com/teensy/td_libs_Encoder.html
 #ifdef DO_ROTARY_ENCODER
   Encoder rotEncoderX(52,50);
+  byte rotEncoderPushButton = 40; //pin for a push button input
 #endif 
 
 //------------------------------------------------------------------------------------------------

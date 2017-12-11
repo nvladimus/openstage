@@ -67,6 +67,29 @@ void loop() {
       //Serial.println(diffRotEncCounter);
       Serial.println(stagePosition[0]);
     }
+    // Read the pushbutton state change, with debouncing
+    // If we have gone on to the next millisecond
+    if(millis() != lastDebounceTime)
+    {
+      int reading = digitalRead(rotEncoderPushButton);
+      if(reading == buttonState && bounceCounter > 0)
+      {
+        bounceCounter--;
+      }
+      if(reading != buttonState)
+      {
+         bounceCounter++; 
+      }
+      // If the Input has shown the same value for long enough let's switch it
+      if(bounceCounter >= debounceCount)
+      {
+        bounceCounter = 0;
+        buttonState = reading;
+        if(buttonState == HIGH)
+          Serial.println("click");
+      }
+      lastDebounceTime = millis();
+    }
   #endif 
   
   //Move based on serial commands 
