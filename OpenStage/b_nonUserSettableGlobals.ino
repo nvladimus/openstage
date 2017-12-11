@@ -25,7 +25,6 @@ bool locationStored[4]={0,0,0,0};
 
 // state variables for the RGB rotary encoder
 long oldRotEncCounter = 0;
-int prevButtonState = LOW;
 int buttonState = LOW;
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
 int bounceCounter = 0;

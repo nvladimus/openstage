@@ -57,11 +57,10 @@ void loop() {
   //Move based on rotary encoder
   #ifdef DO_ROTARY_ENCODER
     float newRotEncTarget[numAxes];
-    float speedX = 10.0; //micron per rot. encoder step
     long newRotEncCounter = rotEncoderX.read();
     int diffRotEncCounter = newRotEncCounter - oldRotEncCounter;
     if(abs(diffRotEncCounter) > 0){ //rot. encoder counter increments by 4 at each step
-      newRotEncTarget[0] = stagePosition[0] + (diffRotEncCounter/4.0)*speedX;
+      newRotEncTarget[0] = stagePosition[0] + (diffRotEncCounter/4.0)*currentSpeed[0];
       moveToTarget(newRotEncTarget);
       oldRotEncCounter = newRotEncCounter;
       //Serial.println(diffRotEncCounter);
@@ -72,21 +71,23 @@ void loop() {
     if(millis() != lastDebounceTime)
     {
       int reading = digitalRead(rotEncoderPushButton);
-      if(reading == buttonState && bounceCounter > 0)
-      {
+      if(reading == buttonState && bounceCounter > 0)  
         bounceCounter--;
-      }
-      if(reading != buttonState)
-      {
-         bounceCounter++; 
-      }
+      if(reading != buttonState)   
+        bounceCounter++; 
       // If the Input has shown the same value for long enough let's switch it
       if(bounceCounter >= debounceCount)
       {
         bounceCounter = 0;
         buttonState = reading;
-        if(buttonState == HIGH)
-          Serial.println("click");
+        //if button pushed, select new speed
+        if(buttonState == HIGH){
+          speedIndex++;
+          speedIndex = speedIndex % 3; //cycle through 0,1,2
+          currentSpeed[0] = rotaryEncoderSpeed[speedIndex];
+          Serial.print("new speed:");
+          Serial.println(currentSpeed[0],0);
+        }
       }
       lastDebounceTime = millis();
     }
